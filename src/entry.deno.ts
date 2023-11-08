@@ -26,25 +26,27 @@ const { router, notFound, staticFile } = createQwikCity({
 const port = Number(Deno.env.get("PORT") ?? 3009);
 
 /* eslint-disable */
-console.log(`Server starter: http://localhost:${port}/app/`);
+console.log(`Server starter: http://localhost:${port}/`);
 
 serve(
   async (request: Request, conn: any) => {
     const staticResponse = await staticFile(request);
     if (staticResponse) {
+      console.log(`Serving static file: ${request.url}`);
       return staticResponse;
     }
 
     // Server-side render this request with Qwik City
     const qwikCityResponse = await router(request, conn);
     if (qwikCityResponse) {
+      console.log(`>>Serving Qwik City response: ${request.url}`);
       return qwikCityResponse;
     }
 
     // Path not found
     return notFound(request);
   },
-  { port },
+  { port }
 );
 
 declare const Deno: any;
